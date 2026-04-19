@@ -1,0 +1,59 @@
+{
+  "id": "order_schema_v1",
+  "name": "Order Schema",
+  "description": "Golden reference for e-commerce order JSON output",
+  "tags": ["ecommerce", "order", "transaction"],
+  "schema_data": {
+    "order_id": "ORD-20240615-88421",
+    "status": "shipped",
+    "customer": {
+      "customer_id": "USR-789456",
+      "name": "Jane Doe",
+      "email": "jane.doe@example.com"
+    },
+    "items": [
+      {
+        "product_id": "PROD-001",
+        "name": "Wireless Noise-Cancelling Headphones",
+        "quantity": 1,
+        "unit_price": 269.99,
+        "subtotal": 269.99
+      },
+      {
+        "product_id": "PROD-045",
+        "name": "USB-C Charging Cable 2m",
+        "quantity": 2,
+        "unit_price": 12.99,
+        "subtotal": 25.98
+      }
+    ],
+    "pricing": {
+      "subtotal": 295.97,
+      "shipping": 9.99,
+      "tax": 23.68,
+      "discount": 29.60,
+      "total": 300.04,
+      "currency": "USD"
+    },
+    "shipping": {
+      "method": "UPS Ground",
+      "tracking_number": "1Z999AA10123456784",
+      "estimated_delivery": "2024-06-20",
+      "address": {
+        "street": "123 Main Street",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip_code": "94102",
+        "country": "US"
+      }
+    },
+    "payment": {
+      "method": "credit_card",
+      "last_four": "4242",
+      "brand": "Visa",
+      "status": "captured"
+    },
+    "created_at": "2024-06-15T13:22:00Z",
+    "updated_at": "2024-06-16T09:05:00Z"
+  }
+}
