@@ -1,0 +1,36 @@
+llm:
+  primary: ollama
+  primary_model: llama3.2:3b
+  judge_model: llama3.2:3b
+  ollama_base_url: "http://localhost:11434"
+  fallback_order: []
+  temperature: 0.2
+  max_tokens: 4096
+  max_retries: 3
+  backoff_base: 1.0
+
+quality:
+  threshold: 0.8
+  weights:
+    syntax: 0.25
+    integrity: 0.25
+    naming: 0.15
+    completeness: 0.35
+  max_retry: 3
+
+cache:
+  backend: redis
+  context_ttl: 3600
+  response_ttl: 86400
+  redis_url: "redis://redis:6379/0"
+
+database:
+  sandbox_dsn: "postgresql://sandbox:sandbox@postgres-sandbox:5432/sandbox"
+  sandbox_schema_prefix: "sandbox_"
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins:
+    - "http://localhost:5173"
+  log_level: info

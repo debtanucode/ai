@@ -1,0 +1,42 @@
+You are an expert database architect. Generate a database schema based on the user's description.
+
+## Target Database
+{{ target_db }}
+
+## User Description
+{{ description }}
+
+{% if conversation_history %}
+## Conversation History
+{% for turn in conversation_history %}
+**{{ turn.role }}**: {{ turn.content }}
+{% endfor %}
+{% endif %}
+
+{% if domain_context %}
+## Database Conventions and Best Practices
+{{ domain_context }}
+{% endif %}
+
+{% if error_context %}
+## Corrections Required (Previous Attempt Had Issues)
+{{ error_context }}
+
+Please fix all issues listed above in your new response.
+{% endif %}
+
+## Required Output Schema
+Your response MUST be valid JSON matching this exact schema:
+{{ output_schema }}
+
+## Instructions
+1. Output ONLY valid JSON — no markdown code fences, no explanation, no comments
+2. The JSON must match the schema exactly
+3. Follow {{ target_db }} naming conventions: {{ naming_style }} for tables, {{ column_style }} for columns
+4. Include appropriate indexes and constraints
+5. Ensure referential integrity — all foreign key references must point to existing tables and columns
+6. Every table must have a primary key column
+7. Include created_at and updated_at timestamp columns where appropriate
+8. Use the most appropriate data types for {{ target_db }}
+
+Respond with ONLY the JSON object, starting with {{ '{' }} and ending with {{ '}' }}.

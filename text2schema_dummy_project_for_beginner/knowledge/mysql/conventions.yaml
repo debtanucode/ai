@@ -1,0 +1,242 @@
+db: mysql
+
+naming:
+  table_style: snake_case_plural
+  column_style: snake_case
+  pk_pattern: "id"
+  fk_pattern: "{referenced_table_singular}_id"
+  max_identifier_length: 64
+
+reserved_words:
+  - accessible
+  - add
+  - all
+  - alter
+  - analyze
+  - and
+  - as
+  - asc
+  - asensitive
+  - before
+  - between
+  - bigint
+  - binary
+  - blob
+  - both
+  - by
+  - call
+  - cascade
+  - case
+  - change
+  - char
+  - character
+  - check
+  - collate
+  - column
+  - condition
+  - constraint
+  - continue
+  - convert
+  - create
+  - cross
+  - cursor
+  - database
+  - databases
+  - day_hour
+  - day_microsecond
+  - day_minute
+  - day_second
+  - dec
+  - decimal
+  - declare
+  - default
+  - delayed
+  - delete
+  - desc
+  - describe
+  - deterministic
+  - distinct
+  - distinctrow
+  - div
+  - double
+  - drop
+  - dual
+  - each
+  - else
+  - elseif
+  - enclosed
+  - escaped
+  - exists
+  - exit
+  - explain
+  - false
+  - fetch
+  - float
+  - for
+  - force
+  - foreign
+  - from
+  - fulltext
+  - grant
+  - group
+  - having
+  - high_priority
+  - hour_microsecond
+  - hour_minute
+  - hour_second
+  - if
+  - ignore
+  - in
+  - index
+  - infile
+  - inner
+  - inout
+  - insensitive
+  - insert
+  - int
+  - integer
+  - interval
+  - into
+  - is
+  - iterate
+  - join
+  - key
+  - keys
+  - kill
+  - leading
+  - leave
+  - left
+  - like
+  - limit
+  - linear
+  - lines
+  - load
+  - localtime
+  - localtimestamp
+  - lock
+  - long
+  - longblob
+  - longtext
+  - loop
+  - low_priority
+  - natural
+  - not
+  - null
+  - numeric
+  - on
+  - optimize
+  - option
+  - optionally
+  - or
+  - order
+  - out
+  - outer
+  - outfile
+  - precision
+  - primary
+  - procedure
+  - purge
+  - range
+  - read
+  - reads
+  - real
+  - references
+  - regexp
+  - release
+  - rename
+  - repeat
+  - replace
+  - require
+  - restrict
+  - return
+  - right
+  - rlike
+  - schema
+  - schemas
+  - select
+  - sensitive
+  - separator
+  - set
+  - show
+  - smallint
+  - spatial
+  - specific
+  - sql
+  - sqlexception
+  - sqlstate
+  - sqlwarning
+  - straight_join
+  - table
+  - terminated
+  - then
+  - tinyblob
+  - tinyint
+  - tinytext
+  - to
+  - trailing
+  - trigger
+  - true
+  - undo
+  - union
+  - unique
+  - unlock
+  - unsigned
+  - update
+  - usage
+  - use
+  - using
+  - utc_date
+  - utc_time
+  - utc_timestamp
+  - values
+  - varbinary
+  - varchar
+  - varying
+  - when
+  - where
+  - while
+  - with
+  - write
+  - xor
+  - year_month
+  - zerofill
+
+type_mappings:
+  string_short: "VARCHAR(255)"
+  string_long: "TEXT"
+  integer: "INT"
+  big_integer: "BIGINT UNSIGNED"
+  float: "DECIMAL(10,2)"
+  boolean: "TINYINT(1)"
+  timestamp: "DATETIME"
+  json: "JSON"
+  uuid: "CHAR(36)"
+
+conventions:
+  - "Use BIGINT UNSIGNED AUTO_INCREMENT for primary keys"
+  - "Always use ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+  - "Always add created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"
+  - "Always add updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+  - "Use CHAR(36) for UUIDs (MySQL lacks native UUID type)"
+  - "Prefer TEXT over VARCHAR for long content"
+  - "Always define explicit foreign key indexes (MySQL requires them)"
+  - "Use TINYINT(1) for boolean columns"
+  - "Table names should be plural snake_case"
+  - "Never exceed 64 characters for identifiers"
+
+few_shot_examples:
+  - input: "Blog platform with posts, authors, and comments"
+    output_summary: |
+      Tables: authors (id BIGINT UNSIGNED AUTO_INCREMENT PK, name VARCHAR(255),
+      email VARCHAR(255) UNIQUE, bio TEXT, created_at DATETIME, updated_at DATETIME),
+      posts (id, title VARCHAR(500), content LONGTEXT, author_id FK->authors,
+      status ENUM('draft','published'), published_at DATETIME, slug VARCHAR(255) UNIQUE),
+      comments (id, post_id FK->posts, author_id FK->authors, body TEXT, created_at)
+      ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  - input: "Order management system"
+    output_summary: |
+      Tables: customers (id, name, email UNIQUE, phone VARCHAR(20)),
+      orders (id, customer_id FK->customers, status ENUM, total_amount DECIMAL(10,2),
+      created_at, updated_at),
+      order_items (id, order_id FK->orders, product_name VARCHAR(255),
+      quantity INT, unit_price DECIMAL(10,2))

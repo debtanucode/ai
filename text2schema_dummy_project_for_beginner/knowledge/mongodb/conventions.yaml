@@ -1,0 +1,89 @@
+db: mongodb
+
+naming:
+  table_style: camelCase_plural
+  column_style: camelCase
+  pk_pattern: "_id"
+  fk_pattern: "{referencedCollection}Id"
+  max_identifier_length: 120
+
+reserved_words:
+  - _id
+  - __v
+  - $where
+  - $or
+  - $and
+  - $not
+  - $nor
+  - $gt
+  - $gte
+  - $lt
+  - $lte
+  - $eq
+  - $ne
+  - $in
+  - $nin
+  - $exists
+  - $type
+  - $mod
+  - $regex
+  - $text
+  - $near
+  - $geoWithin
+  - $elemMatch
+  - $size
+  - $all
+
+type_mappings:
+  string_short: "string"
+  string_long: "string"
+  integer: "int"
+  big_integer: "long"
+  float: "double"
+  boolean: "bool"
+  timestamp: "date"
+  json: "object"
+  uuid: "string"
+
+conventions:
+  - "Use ObjectId for _id fields (automatic if omitted)"
+  - "Consider embedding vs referencing: embed when data is frequently read together"
+  - "Use references (ObjectId) when data is large or shared across documents"
+  - "Collection names should be camelCase plural (e.g., userProfiles)"
+  - "Add createdAt and updatedAt timestamps to all collections"
+  - "Use $jsonSchema for document validation at the collection level"
+  - "Avoid deeply nested documents (max 3 levels recommended)"
+  - "Design indexes based on query patterns, not relational assumptions"
+  - "Use sparse indexes for optional fields that are frequently queried"
+  - "Consider sharding key carefully for horizontal scaling"
+
+embed_vs_reference:
+  embed_when:
+    - "Data is always accessed together"
+    - "One-to-few relationships (less than ~100 child documents)"
+    - "Child data rarely changes independently"
+    - "Performance requires avoiding extra round-trips"
+  reference_when:
+    - "Data is shared across multiple parent documents"
+    - "One-to-many or many-to-many relationships"
+    - "Child documents grow unboundedly"
+    - "Independent access to child data is common"
+
+few_shot_examples:
+  - input: "Social media platform with users and posts"
+    output_summary: |
+      Collections: users {_id: ObjectId, username: string, email: string,
+      profile: {bio: string, avatar: string}, followers: [ObjectId],
+      createdAt: date, updatedAt: date},
+      posts {_id: ObjectId, authorId: ObjectId (ref: users),
+      content: string, mediaUrls: [string], likes: [ObjectId],
+      comments: [{userId: ObjectId, text: string, createdAt: date}],
+      createdAt: date, updatedAt: date}
+  - input: "Product catalog with reviews"
+    output_summary: |
+      Collections: products {_id: ObjectId, name: string, description: string,
+      price: double, categories: [string], specifications: object,
+      averageRating: double, reviewCount: int, createdAt: date},
+      reviews {_id: ObjectId, productId: ObjectId (ref: products),
+      userId: ObjectId (ref: users), rating: int, title: string,
+      body: string, helpful: int, createdAt: date}

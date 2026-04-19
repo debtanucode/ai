@@ -1,0 +1,39 @@
+You are a database schema quality evaluator. Evaluate the following schema against the original requirements.
+
+## Original Requirements
+{{ description }}
+
+## Schema to Evaluate
+{{ schema_json }}
+
+## Evaluation Criteria
+
+Score each dimension from 0.0 to 1.0:
+
+### 1. Entity Coverage (40% weight)
+- Are all entities mentioned in the description represented as tables/collections?
+- Are implicit entities (junction tables, audit logs, etc.) included where needed?
+- Score: 1.0 = all entities covered, 0.0 = major entities missing
+
+### 2. Relationship Accuracy (35% weight)
+- Are relationships between entities correctly modeled?
+- Are cardinalities correct (one-to-many, many-to-many)?
+- Are foreign keys pointing to the right tables and columns?
+- Score: 1.0 = all relationships correct, 0.0 = relationships are wrong or missing
+
+### 3. Attribute Completeness (25% weight)
+- Do tables/collections have all expected attributes?
+- Are data types appropriate for the use case?
+- Are constraints (NOT NULL, UNIQUE) applied correctly?
+- Score: 1.0 = all attributes present and correct, 0.0 = major attributes missing
+
+## Output Format
+Respond with ONLY valid JSON (no markdown, no explanation):
+{
+  "entity_coverage": <float 0.0-1.0>,
+  "relationship_accuracy": <float 0.0-1.0>,
+  "attribute_completeness": <float 0.0-1.0>,
+  "composite": <float computed as entity_coverage*0.40 + relationship_accuracy*0.35 + attribute_completeness*0.25>,
+  "reasoning": "<brief explanation of scores>",
+  "missing_elements": ["<element1>", "<element2>"]
+}

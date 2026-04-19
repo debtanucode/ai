@@ -1,0 +1,101 @@
+db: dynamodb
+
+naming:
+  table_style: PascalCase
+  column_style: PascalCase
+  pk_pattern: "PK"
+  fk_pattern: "SK"
+  max_identifier_length: 255
+
+reserved_words:
+  - ABORT
+  - ABSOLUTE
+  - ACTION
+  - ADD
+  - AFTER
+  - AGENT
+  - ALL
+  - ALLOCATE
+  - ALTER
+  - ANALYZE
+  - AND
+  - ANY
+  - ARCHIVE
+  - ARE
+  - ARRAY
+  - AS
+  - ASC
+  - ASCII
+  - ASENSITIVE
+  - ASSERTION
+  - ASYMMETRIC
+  - AT
+  - ATOMIC
+  - ATTACH
+  - ATTRIBUTE
+  - AUTH
+  - AUTHORIZATION
+  - AUTHORIZE
+  - AUTO
+
+type_mappings:
+  string_short: "S"
+  string_long: "S"
+  integer: "N"
+  big_integer: "N"
+  float: "N"
+  boolean: "BOOL"
+  timestamp: "S"
+  json: "M"
+  uuid: "S"
+
+access_patterns:
+  description: "DynamoDB requires designing tables around access patterns"
+  single_table_design:
+    - "Use a single table with composite PK (PK + SK) for multiple entity types"
+    - "Overload PK/SK with entity-type prefixes (e.g., USER#123, ORDER#456)"
+    - "Use GSI (Global Secondary Index) for alternative access patterns"
+    - "Use LSI (Local Secondary Index) for same-partition alternative sorts"
+  pk_patterns:
+    - "USER#{userId} — for user entities"
+    - "ORDER#{orderId} — for order entities"
+    - "PRODUCT#{productId} — for product entities"
+    - "#{entityType}#{id} — generic pattern"
+  sk_patterns:
+    - "METADATA — for the main entity record"
+    - "ORDER#{orderId} — for user's orders (user partition)"
+    - "#{timestamp} — for time-series data"
+    - "#{sortableAttribute} — for range queries"
+
+conventions:
+  - "Design for access patterns first, not entities"
+  - "Use single-table design to minimize round trips"
+  - "PK and SK values should include entity type prefix (e.g., USER#123)"
+  - "Store ISO 8601 strings for timestamps (DynamoDB has no native date type)"
+  - "Use sparse GSIs — only items with the GSI key attribute appear in the index"
+  - "PAY_PER_REQUEST billing mode for unpredictable workloads"
+  - "Avoid hot partitions — ensure PK cardinality is high"
+  - "Use TTL attribute for automatic item expiration"
+  - "Table names should be PascalCase (e.g., UserOrders)"
+  - "Attribute names should be PascalCase (e.g., UserId, CreatedAt)"
+
+few_shot_examples:
+  - input: "E-commerce platform with users, orders, and products"
+    output_summary: |
+      Single table: ECommerceTable
+      PK: Partition key (String), SK: Sort key (String)
+      Entity patterns:
+        User: PK=USER#{userId}, SK=METADATA
+        Order: PK=ORDER#{orderId}, SK=METADATA; also PK=USER#{userId}, SK=ORDER#{orderId}
+        Product: PK=PRODUCT#{productId}, SK=METADATA
+        OrderItem: PK=ORDER#{orderId}, SK=ITEM#{productId}
+      GSIs:
+        GSI1: PK=GSI1PK (e.g., STATUS#{status}), SK=GSI1SK (e.g., createdAt) for order status queries
+      Attributes: UserId, Email, OrderId, Status, TotalAmount, ProductId, Price, CreatedAt (ISO 8601), TTL
+  - input: "Session management system"
+    output_summary: |
+      Table: Sessions
+      PK: SessionId (String), no SK needed (simple lookup)
+      Attributes: UserId, ExpiresAt (ISO 8601), Data (Map), CreatedAt
+      TTL: TTLExpiry (Unix timestamp for auto-expiration)
+      GSI: UserIdIndex on UserId for looking up all sessions by user

@@ -1,0 +1,141 @@
+db: postgresql
+
+naming:
+  table_style: snake_case_plural
+  column_style: snake_case
+  pk_pattern: "id"
+  fk_pattern: "{referenced_table_singular}_id"
+  max_identifier_length: 63
+
+reserved_words:
+  - all
+  - analyse
+  - analyze
+  - and
+  - any
+  - array
+  - as
+  - asc
+  - asymmetric
+  - authorization
+  - between
+  - bigint
+  - binary
+  - both
+  - case
+  - cast
+  - check
+  - collate
+  - column
+  - constraint
+  - create
+  - cross
+  - current_date
+  - current_role
+  - current_time
+  - current_timestamp
+  - current_user
+  - default
+  - deferrable
+  - desc
+  - distinct
+  - do
+  - else
+  - end
+  - except
+  - false
+  - fetch
+  - for
+  - foreign
+  - from
+  - full
+  - grant
+  - group
+  - having
+  - ilike
+  - in
+  - initially
+  - inner
+  - intersect
+  - into
+  - is
+  - join
+  - lateral
+  - leading
+  - left
+  - like
+  - limit
+  - localtime
+  - localtimestamp
+  - natural
+  - not
+  - null
+  - offset
+  - on
+  - only
+  - or
+  - order
+  - outer
+  - overlaps
+  - placing
+  - primary
+  - references
+  - returning
+  - right
+  - select
+  - session_user
+  - similar
+  - some
+  - symmetric
+  - table
+  - then
+  - to
+  - trailing
+  - true
+  - union
+  - unique
+  - user
+  - using
+  - variadic
+  - verbose
+  - when
+  - where
+  - window
+  - with
+
+type_mappings:
+  string_short: "VARCHAR(255)"
+  string_long: "TEXT"
+  integer: "INTEGER"
+  big_integer: "BIGINT"
+  float: "NUMERIC(10,2)"
+  boolean: "BOOLEAN"
+  timestamp: "TIMESTAMPTZ"
+  json: "JSONB"
+  uuid: "UUID"
+
+conventions:
+  - "Use BIGSERIAL or BIGINT GENERATED ALWAYS AS IDENTITY for primary keys"
+  - "Always add created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()"
+  - "Always add updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()"
+  - "Use JSONB instead of JSON for queryable JSON data"
+  - "Define foreign key constraints with explicit ON DELETE/ON UPDATE actions"
+  - "Use partial indexes for filtered queries"
+  - "Prefer UUID for cross-service identifiers"
+  - "Table names should be plural snake_case (e.g., user_accounts)"
+  - "Column names should be singular snake_case"
+  - "Never exceed 63 characters for identifiers"
+
+few_shot_examples:
+  - input: "A user management system with users and roles"
+    output_summary: |
+      Tables: users (id BIGSERIAL PK, email VARCHAR(255) UNIQUE, username VARCHAR(100),
+      password_hash TEXT, created_at TIMESTAMPTZ, updated_at TIMESTAMPTZ),
+      roles (id BIGSERIAL PK, name VARCHAR(50) UNIQUE, description TEXT),
+      user_roles (user_id BIGINT FK->users, role_id BIGINT FK->roles, granted_at TIMESTAMPTZ)
+  - input: "E-commerce product catalog with categories and inventory"
+    output_summary: |
+      Tables: categories (id, name, parent_id FK->categories, slug UNIQUE),
+      products (id, name, description, price NUMERIC, category_id FK->categories,
+      sku VARCHAR UNIQUE, created_at, updated_at),
+      inventory (id, product_id FK->products, quantity INTEGER, warehouse_location)
